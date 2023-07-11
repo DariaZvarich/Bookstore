@@ -12,9 +12,41 @@ app = Flask(__name__)
 # Returns a emojiy face
 # Try it:
 #   ; curl http://localhost:5000/emoji
-@app.route('/emoji', methods=['GET'])
-def get_emoji():
-    return ":)"
+
+
+# @app.route('/greet', methods=['GET'])
+# def get_greet():
+#     name = request.args['person']
+#     return f"Hello {name}!\n"
+
+# @app.route('/greet', methods=['POST'])
+# def post_greet():
+#     name = request.args['person']
+#     return f"Hello {name}!\n"
+
+# @app.route('/submit', methods=['POST'])
+# def post_submit():
+#     name = request.form['name']
+#     massage = request.form['massage']
+#     return f'Thanks {name}, you sent this message: "{massage}"'
+
+
+# @app.route('/wave', methods=['GET'])
+# def post_wave():
+#     name = request.form['name']
+#     return f'I am waving at {name}'
+
+@app.route('/wave', methods=["GET"])
+def get_wave():
+    name = request.args['name']
+    return f"I am waving at {name}"
+
+@app.route('/submit', methods=["POST"])
+def post_submit():
+    name = request.form['name']
+    message = request.form['message']
+    return f'Thanks {name}, you sent this message: "{message}"'
+
 
 # This imports some more example routes for you to see how they work
 # You can delete these lines if you don't need them.
