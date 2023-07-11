@@ -36,16 +36,27 @@ app = Flask(__name__)
 #     name = request.form['name']
 #     return f'I am waving at {name}'
 
-@app.route('/wave', methods=["GET"])
-def get_wave():
-    name = request.args['name']
-    return f"I am waving at {name}"
 
-@app.route('/submit', methods=["POST"])
-def post_submit():
-    name = request.form['name']
-    message = request.form['message']
-    return f'Thanks {name}, you sent this message: "{message}"'
+# ---------------
+# @app.route('/wave', methods=["GET"])
+# def get_wave():
+#     name = request.args['name']
+#     return f"I am waving at {name}"
+
+# @app.route('/submit', methods=["POST"])
+# def post_submit():
+#     name = request.form['name']
+#     message = request.form['message']
+#     return f'Thanks {name}, you sent this message: "{message}"'
+
+@app.route('/count_vowels', methods=["POST"])
+def post_count_vowels():
+    text = request.form['text']
+    vowel_number = 0
+    for letter in text:
+        if letter in 'aeiou':
+            vowel_number += 1
+    return f'There are {vowel_number} vowels in "{text}"'
 
 
 # This imports some more example routes for you to see how they work
