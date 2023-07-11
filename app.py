@@ -49,15 +49,22 @@ app = Flask(__name__)
 #     message = request.form['message']
 #     return f'Thanks {name}, you sent this message: "{message}"'
 
-@app.route('/count_vowels', methods=["POST"])
-def post_count_vowels():
-    text = request.form['text']
-    vowel_number = 0
-    for letter in text:
-        if letter in 'aeiou':
-            vowel_number += 1
-    return f'There are {vowel_number} vowels in "{text}"'
+# @app.route('/count_vowels', methods=["POST"])
+# def post_count_vowels():
+#     text = request.form['text']
+#     vowel_number = 0
+#     for letter in text:
+#         if letter in 'aeiou':
+#             vowel_number += 1
+#     return f'There are {vowel_number} vowels in "{text}"'
 
+@app.route('/sort-names', methods=['POST'])
+def post_sort_names():
+    if 'names' not in request.form:
+        return "You didn`t submit any names!", 400
+    names = request.form['names'].split(',')
+    # sorted_names = sorted(names)
+    return ','.join(names)
 
 # This imports some more example routes for you to see how they work
 # You can delete these lines if you don't need them.
