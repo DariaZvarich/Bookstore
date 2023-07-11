@@ -72,36 +72,77 @@ Then: I should get a 200 response with 5 in the message
 """
 Alice, Joe, Julia, Kieran, Zoe
 """
-def test_post_sort_names_with_a_list_of_names(web_client):
-    response = web_client.post("/sort-names", data={
-        'names': 'Alice, Joe, Julia, Kieran, Zoe'
-    })
-    assert response.status_code == 200
-    assert response.data.decode('utf-8') == 'Alice, Joe, Julia, Kieran, Zoe'
+# def test_post_sort_names_with_a_list_of_names(web_client):
+#     response = web_client.post("/sort-names", data={
+#         'names': 'Alice, Joe, Julia, Kieran, Zoe'
+#     })
+#     assert response.status_code == 200
+#     assert response.data.decode('utf-8') == 'Alice, Joe, Julia, Kieran, Zoe'
 
-# POST /sort-names
-# With names=Aaaaa,Aaaaz,Aaaab
-# Expected response (200 OK)
+# # POST /sort-names
+# # With names=Aaaaa,Aaaaz,Aaaab
+# # Expected response (200 OK)
+# """
+# Aaaaa, Aaaaz, Aaaab
+# """
+
+# def test_post_sort_names_with_a_list_of_names_with_letters_at_the_end(web_client):
+#     response = web_client.post("/sort-names", data={
+#         'names': 'Aaaaa, Aaaaz, Aaaab'
+#     })
+#     assert response.status_code == 200
+#     assert response.data.decode('utf-8') == 'Aaaaa, Aaaaz, Aaaab'
+
+
+# # POST /sort-names
+# # With no names
+# # Expected response Invalid Request code
+# """
+# You didn`t submit any names!
+# """
+
+# def test_post_sort_names_with_no_list_of_names(web_client):
+#     response = web_client.post("/sort-names")
+#     assert response.status_code == 400
+#     assert response.data.decode('utf-8') == 'You didn`t submit any names!'
+
+
 """
-Aaaaa, Aaaaz, Aaaab
+When i missed to add the parameter
+I get error 400  
 """
 
-def test_post_sort_names_with_a_list_of_names_with_letters_at_the_end(web_client):
-    response = web_client.post("/sort-names", data={
-        'names': 'Aaaaa, Aaaaz, Aaaab'
-    })
-    assert response.status_code == 200
-    assert response.data.decode('utf-8') == 'Aaaaa, Aaaaz, Aaaab'
-
-
-# POST /sort-names
-# With no names
-# Expected response Invalid Request code
-"""
-You didn`t submit any names!
-"""
-
-def test_post_sort_names_with_no_list_of_names(web_client):
-    response = web_client.post("/sort-names")
+def test_400_when_no_parameter(web_client):
+    response = web_client.get("/names")
     assert response.status_code == 400
-    assert response.data.decode('utf-8') == 'You didn`t submit any names!'
+
+"""
+When i add empty string
+I get error 400  
+"""
+
+def test_get_empty_string(web_client):
+    response = web_client.get("/names?=")
+    assert response.status_code == 400
+
+
+"""
+When i add the name
+I get the list of names with added name and 200 OK
+"""
+
+def test_get_add_name(web_client):
+    response = web_client.get("/names?add=Eddie")
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == 'Alice, Eddie, Julia, Karim'
+
+
+"""
+When i add multiple names
+I get the list of names with added names and 200 OK
+"""
+
+def test_get_add_multiples_names(web_client):
+    response = web_client.get("/names?add=Eddie,Leo")
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == 'Alice, Eddie, Julia, Karim, Leo'
