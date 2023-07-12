@@ -55,7 +55,7 @@ def test_create_book(db_connection, web_client):
         "Book(3, Bluets, Maggie Nelson)\n" +
         "Book(4, No Place on Earth, Christa Wolf)\n" +
         "Book(5, Nevada, Imogen Binnie)\n" +
-        "Book(6, The Great Gatsby, F. Scott Fitzgerald)"
+        "Book(6, The Great Gatsby, F. Scott Fitzgerald)\n"
     ])
 
 """
@@ -76,6 +76,6 @@ def test_delete_book(db_connection, web_client):
         "Book(2, The Man Who Was Thursday, GK Chesterton)\n" +
         "Book(3, Bluets, Maggie Nelson)\n" +
         "Book(4, No Place on Earth, Christa Wolf)\n" +
-        "Book(5, Nevada, Imogen Binnie)"
+        "Book(5, Nevada, Imogen Binnie)\n"
     ])
 

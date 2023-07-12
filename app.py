@@ -1,11 +1,46 @@
 import os
+from lib.database_connection import get_flask_database_connection
+from lib.book_repository import BookRepository
 from flask import Flask, request
+from lib.book import Book
 
 # Create a new Flask app
 app = Flask(__name__)
 
 # == Your Routes Here ==
 
+@app.route('/books')
+def get_books1():
+    connection = get_flask_database_connection(app)
+    repository = BookRepository(connection)
+    books = repository.all()
+    books_strings = [f"{book}" for book in books]
+    return "\n".join(books_strings)
+
+@app.route('/books/<id>')
+def get_books2():
+    connection = get_flask_database_connection(app)
+    repository = BookRepository(connection)
+    book = repository.find(id)
+    return str(book)
+
+@app.route('/books', methods=['POST'])
+def post_books():
+    connection = get_flask_database_connection(app)
+    repository = BookRepository(connection)
+    title = request.form['title']
+    author_name = request.form['author_name']
+    book = Book(None, title, author_name)
+    repository.create(book)
+    return "Book added successfully."
+
+@app.route('/books/<id>', methods=['DELETE'])
+def delete_books(id):
+    connection = get_flask_database_connection(app)
+    repository = BookRepository(connection)
+    repository.delete(id)
+    return 'Book deleted successfully.'
+    
 # == Example Code Below ==
 
 # GET /emoji
@@ -67,20 +102,24 @@ app = Flask(__name__)
 #     return ','.join(names)
 
 
-@app.route('/names', methods=['GET'])
-def get_sort_names():
-    names = ["Julia", "Alice", "Karim"]
-    to_add = request.args.get('add')
-    if not to_add:
-        return "Error: there is no name added", 400
-    split_names = to_add.split(',')
-    names = names + split_names
-    sorted_names = sorted(names)
-    sorted_names_str = ', '.join(sorted_names)
-    return sorted_names_str
+# @app.route('/names', methods=['GET'])
+# def get_sort_names():
+#     names = ["Julia", "Alice", "Karim"]
+#     to_add = request.args.get('add')
+#     if not to_add:
+#         return "Error: there is no name added", 400
+#     split_names = to_add.split(',')
+#     names = names + split_names
+#     sorted_names = sorted(names)
+#     sorted_names_str = ', '.join(sorted_names)
+#     return sorted_names_str
     
     
+# @app.route('/books', methods=['GET'])
+# def get_books():
+#     return ''
     
+
     
 # This imports some more example routes for you to see how they work
 # You can delete these lines if you don't need them.

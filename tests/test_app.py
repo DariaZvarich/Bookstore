@@ -112,18 +112,18 @@ When i missed to add the parameter
 I get error 400  
 """
 
-def test_400_when_no_parameter(web_client):
-    response = web_client.get("/names")
-    assert response.status_code == 400
+# def test_400_when_no_parameter(web_client):
+#     response = web_client.get("/names")
+#     assert response.status_code == 400
 
 """
 When i add empty string
 I get error 400  
 """
 
-def test_get_empty_string(web_client):
-    response = web_client.get("/names?=")
-    assert response.status_code == 400
+# def test_get_empty_string(web_client):
+#     response = web_client.get("/names?=")
+#     assert response.status_code == 400
 
 
 """
@@ -131,18 +131,89 @@ When i add the name
 I get the list of names with added name and 200 OK
 """
 
-def test_get_add_name(web_client):
-    response = web_client.get("/names?add=Eddie")
-    assert response.status_code == 200
-    assert response.data.decode('utf-8') == 'Alice, Eddie, Julia, Karim'
+# def test_get_add_name(web_client):
+#     response = web_client.get("/names?add=Eddie")
+#     assert response.status_code == 200
+#     assert response.data.decode('utf-8') == 'Alice, Eddie, Julia, Karim'
+
+
+# """
+# When i add multiple names
+# I get the list of names with added names and 200 OK
+# """
+
+# def test_get_add_multiples_names(web_client):
+#     response = web_client.get("/names?add=Eddie,Leo")
+#     assert response.status_code == 200
+#     assert response.data.decode('utf-8') == 'Alice, Eddie, Julia, Karim, Leo'
 
 
 """
-When i add multiple names
-I get the list of names with added names and 200 OK
+GET /books
+Returns a list of books
 """
 
-def test_get_add_multiples_names(web_client):
-    response = web_client.get("/names?add=Eddie,Leo")
+def test_get_books(web_client, db_connection):
+    db_connection.seed('seeds/book_store.sql')
+    response = web_client.get('/books')
     assert response.status_code == 200
-    assert response.data.decode('utf-8') == 'Alice, Eddie, Julia, Karim, Leo'
+    assert response.data.decode('utf-8') ==  \
+        "Book(1, Invisible Cities, Italo Calvino)\n" \
+        "Book(2, The Man Who Was Thursday, GK Chesterton)\n" \
+        "Book(3, Bluets, Maggie Nelson)\n" \
+        "Book(4, No Place on Earth, Christa Wolf)\n" \
+        "Book(5, Nevada, Imogen Binnie)"
+        
+        
+"""
+GET /books/<id>
+Returns a single book
+"""
+
+def test_get_book2(web_client, db_connection):
+    db_connection.seed('seeds/book_store.sql')
+    response = web_client.get('/books')
+    assert response.status_code == 200
+    
+    expected_book = "Book(1, Invisible Cities, Italo Calvino)"
+    assert expected_book in response.data.decode('utf-8')
+"""
+POST /books
+Creates a book based on the parameters
+"""
+def test_post_books(web_client, db_connection):
+    db_connection.seed('seeds/book_store.sql')
+    response = web_client.post('/books', data={
+        'title': 'Out of the Crisis', 
+        'author_name': 'W Edwards Deming'
+    })
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == "Book added successfully."
+    
+    response = web_client.get('/books')
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == "" \
+        "Book(1, Invisible Cities, Italo Calvino)\n" \
+        "Book(2, The Man Who Was Thursday, GK Chesterton)\n" \
+        "Book(3, Bluets, Maggie Nelson)\n" \
+        "Book(4, No Place on Earth, Christa Wolf)\n" \
+        "Book(5, Nevada, Imogen Binnie)\n" \
+        "Book(6, Out of the Crisis, W Edwards Deming)"
+"""
+DELETE /books/<id>
+Deletes thes specified book
+"""
+def test_delete_book(web_client, db_connection):
+    db_connection.seed('seeds/book_store.sql')
+    response = web_client.delete('/books/2')
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == "Book deleted successfully"
+    
+    response = web_client.get('/books')
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == (
+        "Book(1, Invisible Cities, Italo Calvino)\n"
+        "Book(3, Bluets, Maggie Nelson)\n" 
+        "Book(4, No Place on Earth, Christa Wolf)\n"
+        "Book(5, Nevada, Imogen Binnie)"
+    )
